@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modern Django To-Do</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            font-family: '-apple-system', BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background: linear-gradient(135deg, #e0eafc 0%, #cfdef3 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            padding-top: 60px;
+        }
+        .container {
+            background: #ffffff;
+            padding: 30px;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            width: 100%;
+            max-width: 420px;
+        }
+        h2 {
+            color: #2c3e50;
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .todo-form {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 25px;
+        }
+        input[type="text"] {
+            flex: 1;
+            padding: 12px 16px;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            font-size: 15px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+        input[type="text"]:focus {
+            border-color: #3498db;
+        }
+        button {
+            padding: 12px 20px;
+            background: #3498db;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        button:hover {
+            background: #2980b9;
+        }
+        ul {
+            list-style: none;
+        }
+        li {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 14px 16px;
+            background: #f8fafc;
+            border: 1px solid #edf2f7;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            transition: all 0.2s;
+        }
+        li:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+        }
+        .task-text {
+            font-size: 15px;
+            color: #334155;
+            max-width: 240px;
+            word-wrap: break-word;
+        }
+        .completed-text {
+            color: #94a3b8;
+            text-decoration: line-through;
+        }
+        .actions {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .action-btn {
+            text-decoration: none;
+            font-size: 16px;
+            font-weight: bold;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 28px;
+            height: 28px;
+            border-radius: 6px;
+            transition: background 0.2s;
+        }
+        .complete-btn {
+            color: #2ecc71;
+            background: #e8f8f0;
+        }
+        .complete-btn:hover {
+            background: #d4f4e2;
+        }
+        .undo-btn {
+            color: #e67e22;
+            background: #fdf2e9;
+            font-size: 12px;
+            width: auto;
+            padding: 0 8px;
+        }
+        .undo-btn:hover {
+            background: #fae5d3;
+        }
+        .del-btn {
+            color: #e74c3c;
+            background: #fadbd8;
+            font-size: 13px;
+        }
+        .del-btn:hover {
+            background: #f5b7b1;
+        }
+        .empty-state {
+            text-align: center;
+            color: #94a3b8;
+            padding: 20px 0;
+            font-size: 15px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h2>✨ My Tasks</h2>
+        
+        <form method="POST" class="todo-form">
+            {% csrf_token %}
+            <input type="text" name="title" placeholder="What needs to be done?" required>
+            <button type="submit">Add</button>
+        </form>
+
+        <ul>
+            {% for task in tasks %}
+                <li>
+                    {% if task.completed %}
+                        <span class="task-text completed-text">{{ task.title }}</span>
+                    {% else %}
+                        <span class="task-text">{{ task.title }}</span>
+                    {% endif %}
+                    <span class="task-time" style="font-size: 11px; color: #94a3b8;">
+                        Created at {{ task.created_at|date:"h:i A" }}
+                    </span>
+
+                    <div class="actions">
+                        <!-- Complete / Undo Link -->
+                        {% if task.completed %}
+                            <a href="{% url 'complete_task' task.id %}" class="action-btn undo-btn">Undo</a>
+                        {% else %}
+                            <a href="{% url 'complete_task' task.id %}" class="action-btn complete-btn">✓</a>
+                        {% endif %}
+
+                        <!-- Delete Link -->
+                        <a href="{% url 'delete_task' task.id %}" class="action-btn del-btn">✕</a>
+                    </div>
+                </li>
+            {% empty %}
+                <div class="empty-state">No tasks yet! Enjoy your day. 🎉</div>
+            {% endfor %}
+        </ul>
+        
+    </div>
+
+</body>
+</html>

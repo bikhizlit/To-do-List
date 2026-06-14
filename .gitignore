@@ -1,0 +1,20 @@
+# Virtual Environment
+.venv/
+venv/
+ENV/
+
+# Python caching
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Django local database & secrets
+db.sqlite3
+.env
+local_settings.py
+
+# Media/Uploads and OS specific files
+media/
+.DS_Store
+Thumbs.db

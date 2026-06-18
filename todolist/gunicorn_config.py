@@ -1,0 +1,1 @@
+wsgi_app = "myproject.wsgi:application" # <-- Replace 'myproject' with your exact Django project folder name!

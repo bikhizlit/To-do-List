@@ -141,6 +141,12 @@
             padding: 20px 0;
             font-size: 15px;
         }
+        .todo-del{
+            display: flex;
+            gap: 10px;
+            margin-bottom: 25px;
+        }
+        
     </style>
 </head>
 <body>
@@ -148,22 +154,26 @@
     <div class="container">
         <h2>✨ My Tasks</h2>
         
-        <form method="POST" class="todo-form">
-            {% csrf_token %}
-            <input type="text" name="title" placeholder="What needs to be done?" required>
-            <button type="submit">Add</button>
-            {% if tasks %}
-            <div>
-                <button type="delete">
-                    <a href="{% url 'clear_all_tasks' %}" 
-                   onclick="return confirm('Are you sure you want to delete all tasks? 🧹');">
-                  
-                    </a>Clear all
-                </button>
-                
-            </div>
-        {% endif %}
-        </form>
+        
+    <form method="POST" class="todo-form" style="display: flex; gap: 8px; margin-bottom: 25px; align-items: center; flex-wrap: wrap;">
+    {% csrf_token %}
+    <!-- Input Box -->
+    <input type="text" name="title" placeholder="What needs to be done?" required style="flex: 1; min-width: 150px;">
+    
+    <!-- Add Button -->
+    <button type="submit" style="padding: 12px 20px; background: #3498db; color: white; border: none; border-radius: 10px; font-size: 15px; font-weight: 600; cursor: pointer; height: 48px;">
+        Add
+    </button>
+
+    <!-- Clear All Button (Fixed Template Syntax) -->
+    {% if tasks %}
+        <button type="button" 
+                onclick="if(confirm('Are you sure you want to delete all tasks? 🧹')) { window.location.href='{% url 'clear_all_tasks' %}'; }"
+                style="padding: 0 16px; background: #e74c3c; color: white; border: none; border-radius: 10px; font-size: 15px; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; height: 48px; transition: background 0.2s;">
+           Clear All
+        </button>
+    {% endif %}
+</form>
 
 <ul>
     {% for task in tasks %}
@@ -212,7 +222,21 @@
         <div class="empty-state">No tasks yet! Enjoy your day. 🎉</div>
     {% endfor %}
 </ul>
-
+<!-- Tiny JavaScript snippet at the bottom to toggle the views -->
+<script>
+function toggleEdit(taskId) {
+    var displayDiv = document.getElementById('display-' + taskId);
+    var editForm = document.getElementById('edit-form-' + taskId);
+    
+    if (displayDiv.style.display === 'none') {
+        displayDiv.style.display = 'flex';
+        editForm.style.display = 'none';
+    } else {
+        displayDiv.style.display = 'none';
+        editForm.style.display = 'flex';
+    }
+}
+</script>
 
 
     

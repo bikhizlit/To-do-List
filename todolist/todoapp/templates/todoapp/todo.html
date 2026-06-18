@@ -152,37 +152,84 @@
             {% csrf_token %}
             <input type="text" name="title" placeholder="What needs to be done?" required>
             <button type="submit">Add</button>
+            {% if tasks %}
+            <div>
+                <button type="delete">
+                    <a href="{% url 'clear_all_tasks' %}" 
+                   onclick="return confirm('Are you sure you want to delete all tasks? 🧹');">
+                  
+                    </a>Clear all
+                </button>
+                
+            </div>
+        {% endif %}
         </form>
 
-        <ul>
-            {% for task in tasks %}
-                <li>
+<ul>
+    {% for task in tasks %}
+        <li>
+            <!-- Normal Mode Container -->
+            <div id="display-{{ task.id }}" style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+                
+                <!-- Task Info Block (Title + Time) -->
+                <div style="display: flex; flex-direction: column; gap: 4px;">
                     {% if task.completed %}
                         <span class="task-text completed-text">{{ task.title }}</span>
                     {% else %}
                         <span class="task-text">{{ task.title }}</span>
                     {% endif %}
+                    
+                    <!-- 💡 This line displays the creation time -->
                     <span class="task-time" style="font-size: 11px; color: #94a3b8;">
                         Created at {{ task.created_at|date:"h:i A" }}
                     </span>
+                </div>
 
-                    <div class="actions">
-                        <!-- Complete / Undo Link -->
-                        {% if task.completed %}
-                            <a href="{% url 'complete_task' task.id %}" class="action-btn undo-btn">Undo</a>
-                        {% else %}
-                            <a href="{% url 'complete_task' task.id %}" class="action-btn complete-btn">✓</a>
-                        {% endif %}
+                <div class="actions">
+                    <!-- Complete / Undo -->
+                    {% if task.completed %}
+                        <a href="{% url 'complete_task' task.id %}" class="action-btn undo-btn">Undo</a>
+                    {% else %}
+                        <!-- Inline Edit Trigger Button -->
+                        <button onclick="toggleEdit('{{ task.id }}')" class="action-btn undo-btn" style="background: #eaf2f8; color: #2980b9; border: none; font-size: 13px; height: 28px; width: auto; padding: 0 8px;">Edit</button>
+                        <a href="{% url 'complete_task' task.id %}" class="action-btn complete-btn">✓</a>
+                    {% endif %}
 
-                        <!-- Delete Link -->
-                        <a href="{% url 'delete_task' task.id %}" class="action-btn del-btn">✕</a>
-                    </div>
-                </li>
-            {% empty %}
-                <div class="empty-state">No tasks yet! Enjoy your day. 🎉</div>
-            {% endfor %}
-        </ul>
-        
+                    <!-- Delete Link -->
+                    <a href="{% url 'delete_task' task.id %}" class="action-btn del-btn">✕</a>
+                </div>
+            </div>
+
+            <!-- Hidden Edit Mode Form -->
+            <form id="edit-form-{{ task.id }}" method="POST" action="{% url 'edit_task' task.id %}" style="display: none; width: 100%; gap: 10px;">
+                {% csrf_token %}
+                <input type="text" name="title" value="{{ task.title }}" style="flex: 1; padding: 6px 10px; border: 2px solid #3498db; border-radius: 6px; font-size: 14px;" required>
+                <button type="submit" style="padding: 6px 12px; background: #2ecc71; border-radius: 6px; font-size: 13px;">Save</button>
+                <button type="button" onclick="toggleEdit('{{ task.id }}')" style="padding: 6px 12px; background: #94a3b8; border-radius: 6px; font-size: 13px;">Cancel</button>
+            </form>
+        </li>
+    {% empty %}
+        <div class="empty-state">No tasks yet! Enjoy your day. 🎉</div>
+    {% endfor %}
+</ul>
+<!-- Tiny JavaScript snippet at the bottom to toggle the views -->
+<script>
+function toggleEdit(taskId) {
+    var displayDiv = document.getElementById('display-' + taskId);
+    var editForm = document.getElementById('edit-form-' + taskId);
+    
+    if (displayDiv.style.display === 'none') {
+        displayDiv.style.display = 'flex';
+        editForm.style.display = 'none';
+    } else {
+        displayDiv.style.display = 'none';
+        editForm.style.display = 'flex';
+    }
+}
+</script>
+
+
+    
     </div>
 
 </body>

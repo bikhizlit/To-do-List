@@ -212,21 +212,7 @@
         <div class="empty-state">No tasks yet! Enjoy your day. 🎉</div>
     {% endfor %}
 </ul>
-<!-- Tiny JavaScript snippet at the bottom to toggle the views -->
-<script>
-function toggleEdit(taskId) {
-    var displayDiv = document.getElementById('display-' + taskId);
-    var editForm = document.getElementById('edit-form-' + taskId);
-    
-    if (displayDiv.style.display === 'none') {
-        displayDiv.style.display = 'flex';
-        editForm.style.display = 'none';
-    } else {
-        displayDiv.style.display = 'none';
-        editForm.style.display = 'flex';
-    }
-}
-</script>
+
 
 
     

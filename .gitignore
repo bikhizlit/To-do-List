@@ -18,3 +18,7 @@ local_settings.py
 media/
 .DS_Store
 Thumbs.db
+
+.vscode
+
+.gitignore

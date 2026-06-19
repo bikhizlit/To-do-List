@@ -21,11 +21,12 @@
         }
         .container {
             background: #ffffff;
-            padding: 30px;
+            padding: 20px;
             border-radius: 16px;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
             width: 100%;
             max-width: 420px;
+            
         }
         h2 {
             color: #2c3e50;
@@ -38,6 +39,8 @@
             display: flex;
             gap: 10px;
             margin-bottom: 25px;
+            margin-top: 12px;
+            align-items: center;
         }
         input[type="text"] {
             flex: 1;
@@ -146,22 +149,51 @@
             gap: 10px;
             margin-bottom: 25px;
         }
-        
+        select[name="category"] {
+    padding: 10px 14px;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    font-size: 14px;
+    background-color: #fff;
+    color: #333;
+    outline: none;
+    cursor: pointer;
+    transition: border-color 0.2s ease;
+    
+    /* Tweaks to line it up perfectly with the input */
+    height: 100%;
+    margin: 0 4px;
+}
+
+/* Add a subtle blue border when the user clicks it */
+select[name="category"]:focus {
+    border-color: #3182ce;
+    box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.5);
+}
     </style>
 </head>
 <body>
-
+    
     <div class="container">
         <h2>✨ My Tasks</h2>
         
         
-    <form method="POST" class="todo-form" style="display: flex; gap: 8px; margin-bottom: 25px; align-items: center; flex-wrap: wrap;">
+    <form method="POST" action="{% url 'add_todo' %}" class="todo-form" style="display: flex; gap: 8px; margin-bottom: 25px; align-items: center; flex-wrap: wrap;">
+
     {% csrf_token %}
-    <!-- Input Box -->
-    <input type="text" name="title" placeholder="What needs to be done?" required style="flex: 1; min-width: 150px;">
-    
+
+    <input type="text" name="title" placeholder="Add a new task..." required>
+
+    <select name="category">
+        <option value="personal">Personal</option>
+        <option value="work">Work</option>
+        <option value="shopping">Shopping</option>
+        <option value="others">Others</option>
+        
+    </select>
+
     <!-- Add Button -->
-    <button type="submit" style="padding: 12px 20px; background: #3498db; color: white; border: none; border-radius: 10px; font-size: 15px; font-weight: 600; cursor: pointer; height: 48px;">
+    <button type="submit" style="padding: 12px 20px; background: #3498db; color: white; border: none; border-radius: 10px; font-size: 15px; font-weight: 600; cursor: pointer; height: 48px; width: 100%;  gap: 10px;">
         Add
     </button>
 
@@ -169,7 +201,7 @@
     {% if tasks %}
         <button type="button" 
                 onclick="if(confirm('Are you sure you want to delete all tasks? 🧹')) { window.location.href='{% url 'clear_all_tasks' %}'; }"
-                style="padding: 0 16px; background: #e74c3c; color: white; border: none; border-radius: 10px; font-size: 15px; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; height: 48px; transition: background 0.2s;">
+                style="padding: 0 16px; background: #e74c3c; color: white; border: none; border-radius: 10px; font-size: 15px; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; height: 48px; transition: background 0.2s; width: 100%;">
            Clear All
         </button>
     {% endif %}
@@ -185,9 +217,12 @@
                 <div style="display: flex; flex-direction: column; gap: 4px;">
                     {% if task.completed %}
                         <span class="task-text completed-text">{{ task.title }}</span>
+                        <!-- RIGHT -->
                     {% else %}
                         <span class="task-text">{{ task.title }}</span>
                     {% endif %}
+                    
+                    <span class="tag {{ task.category }}">{{ task.get_category_display }}</span>
                     
                     <!-- 💡 This line displays the creation time -->
                     <span class="task-time" style="font-size: 11px; color: #94a3b8;">

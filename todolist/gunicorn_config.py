@@ -1,1 +1,1 @@
-wsgi_app = "todolist.wsgi:application" # <-- Replace 'myproject' with your exact Django project folder name!
+wsgi_app = "todolist.wsgi:application" 

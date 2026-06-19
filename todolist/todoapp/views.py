@@ -2,26 +2,29 @@ from django.shortcuts import render, redirect
 from .models import Task
 
 def task_list(request):
-    if request.method == "POST":
-        #Get the title from the form input (name="title")
-        task_title = request.POST.get("title")
-        
-        if task_title:  
-            #Force create and immediately save to the database
-            new_task = Task(title=task_title)
-            new_task.save()
-            
-        return redirect('task_list')
-
-    #Fetch all tasks to display on the page
     tasks = Task.objects.all().order_by('-created_at')
     return render(request, 'todoapp/todo.html', {'tasks': tasks})
+
+
+def add_todo(request):
+    if request.method == "POST":
+        task_title = request.POST.get("title")
+        task_category = request.POST.get("category")
+        
+        if task_title:  
+            new_task = Task(title=task_title, category=task_category)
+            new_task.save()
+            
+    return redirect('task_list')
 
 def complete_task(request, task_id):
     task = Task.objects.get(id=task_id)
     task.completed = not task.completed
     task.save()
     return redirect('task_list')
+
+
+
 
 def delete_task(request, task_id):
     task = Task.objects.get(id=task_id)

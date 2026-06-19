@@ -1,6 +1,6 @@
 {
     "chat.extensionUnification.enabled": false,
-    "editor.fontSize": 18,
+    "editor.fontSize": 16,
     "editor.tabSize": 1,
     "github.copilot.chat.reviewAgent.enabled": false,
     "github.copilot.chat.reviewSelection.enabled": false,

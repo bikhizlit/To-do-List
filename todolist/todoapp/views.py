@@ -1,6 +1,8 @@
 from django.shortcuts import render, redirect
 from .models import Task
 
+
+
 def task_list(request):
     tasks = Task.objects.all().order_by('-created_at')
     return render(request, 'todoapp/todo.html', {'tasks': tasks})

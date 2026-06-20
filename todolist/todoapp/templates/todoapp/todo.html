@@ -263,11 +263,12 @@
 
     <!-- Clear All Button (Fixed Template Syntax) -->
     {% if tasks %}
-        <button type="button" 
-                onclick="if(confirm('Are you sure you want to delete all tasks? 🧹')) { window.location.href='{% url 'clear_all_tasks' %}'; }"
-                style="padding: 0 16px; background: #e74c3c; color: white; border: none; border-radius: 10px; font-size: 15px; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; height: 48px; transition: background 0.2s; width: 100%;">
-           Clear All
-        </button>
+       <button type="button" 
+        data-url="{% url 'clear_all_tasks' %}"
+        onclick="if(confirm('Are you sure you want to delete all tasks? 🧹')) { window.location.href=dataset.url }"
+        style="padding: 0 16px; background: #e74c3c; color: white; border: none; border-radius: 10px; font-size: 15px; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; height: 48px; transition: background 0.2s; width: 100%;">
+    Clear All
+</button>
     {% endif %}
 </form>
 

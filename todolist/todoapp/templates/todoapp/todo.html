@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="{{ request.user.profile.theme }}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -233,8 +233,13 @@
 <body>
     
     <div class="container">
-        <button class="theme-toggle" id="themeButton">🌙</button>
+        <a href="{% url 'toggle_theme' %}" class="theme-toggle" style="text-decoration: none;">
+       {% if request.user.profile.theme == 'dark' %}☀️{% else %}🌙{% endif %}
+        </a>
         <h2>✨ My Tasks</h2>
+        <p style="text-align: center; font-size: 13px; color: #94a3b8; margin-bottom: 15px;">
+    Logged in as <strong>{{ request.user.username }}</strong> | <a href="{% url 'logout' %}" style="color: #e74c3c; text-decoration: none;">Logout</a>
+</p>
         
         
     <form method="POST" action="{% url 'add_todo' %}" class="todo-form" style="display: flex; gap: 8px; margin-bottom: 25px; align-items: center; flex-wrap: wrap;">
@@ -331,28 +336,6 @@ function toggleEdit(taskId) {
     }
 }
 
-const themeButton = document.getElementById('themeButton');
-        
-        // When the page loads, check if the browser remembers a dark preference
-        if (localStorage.getItem('todo-theme') === 'dark') {
-            document.documentElement.setAttribute('data-theme', 'dark');
-            themeButton.textContent = '☀️';
-        }
-
-        // Toggle action
-        themeButton.addEventListener('click', () => {
-            let currentTheme = document.documentElement.getAttribute('data-theme');
-            
-            if (currentTheme === 'dark') {
-                document.documentElement.removeAttribute('data-theme');
-                localStorage.setItem('todo-theme', 'light');
-                themeButton.textContent = '🌙';
-            } else {
-                document.documentElement.setAttribute('data-theme', 'dark');
-                localStorage.setItem('todo-theme', 'dark');
-                themeButton.textContent = '☀️';
-            }
-        });
 </script>
 
 

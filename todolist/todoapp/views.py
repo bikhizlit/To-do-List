@@ -5,6 +5,8 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import login, logout
 from django.contrib.auth.forms import UserCreationForm
 from .models import Task, Profile
+from django.utils.dateparse import parse_date
+from datetime import datetime, time
 
 class TaskListView(LoginRequiredMixin, ListView):
     model = Task
@@ -17,9 +19,20 @@ class TaskListView(LoginRequiredMixin, ListView):
         if search_query:
             queryset = queryset.filter(title__icontains=search_query)
 
+        category_query = self.request.GET.get('category')
+        if category_query:
+            queryset = queryset.filter(category__iexact=category_query)
+        
+        date_query = self.request.GET.get('date')
+        if date_query:
+            parsed_date = parse_date(date_query)
+            if parsed_date:
+            # Cleaned up: Using datetime and time directly instead of datetime.datetime
+                start_of_day = datetime.combine(parsed_date, time.min)
+                end_of_day = datetime.combine(parsed_date, time.max)
+            
+                queryset = queryset.filter(created_at__range=(start_of_day, end_of_day))
         return queryset
-    
-    
 
 
 @login_required
@@ -27,12 +40,17 @@ def add_todo(request):
     if request.method == 'POST':
         title = request.POST.get('title')
         category = request.POST.get('category')
-        if title:
-            Task.objects.create(
-                user=request.user, 
-                title=title, 
-                category=category
-            )
+        date_string = request.POST.get('date')
+        task_date = parse_date(date_string) if date_string else None
+
+        # Fix the creation line here:
+        Task.objects.create(
+            user=request.user,
+            title=title,
+            category=category,
+            # Make sure this matches the exact field name in your models.py (e.g., 'date' or 'created_at')
+            created_at=date_string
+        )
     return redirect('task_list')
 
 @login_required
@@ -74,7 +92,7 @@ def register_user(request):
     if request.method == 'POST':
         form = UserCreationForm(request.POST)
         if form.is_valid():
-            user = form.save()  # The signal triggers here and builds the profile flawlessly!
+            user = form.save()  
             login(request, user)
             return redirect('task_list')
     else:

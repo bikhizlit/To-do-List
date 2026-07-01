@@ -250,6 +250,21 @@
       autocomplete="off" 
       aria-label="Search Tasks"
     >
+    <div class="input-group">
+      <select name="category" aria-label="Filter by Category">
+        <option value="">All Categories</option>
+        <option value="Personal" {% if request.GET.category == 'Personal' %}selected{% endif %}>Personal</option>
+        <option value="Work" {% if request.GET.category == 'Work' %}selected{% endif %}>Work</option>
+        <option value="Shopping" {% if request.GET.category == 'Shopping' %}selected{% endif %}>Shopping</option>
+        <option value="Others" {% if request.GET.category == 'Others' %}selected{% endif %}>Others</option>
+      </select>
+    </div><br>
+
+    
+    <div class="input-group">
+
+      <input type="date" name="date" value="{{ request.GET.date|default:'' }}">
+    </div><br>
     <button type="submit" class="search-btn">
       <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
         <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0"/>
@@ -270,6 +285,10 @@
         <option value="others">Others</option>
         
     </select>
+    <div class="input-group">
+
+      <input type="date" name="date" value="{{ request.GET.date|default:'' }}">
+    </div><br>
 
     <!-- Add Button -->
     <button type="submit" style="padding: 12px 20px; background: #3498db; color: white; border: none; border-radius: 10px; font-size: 15px; font-weight: 600; cursor: pointer; height: 48px; width: 100%;  gap: 10px;">

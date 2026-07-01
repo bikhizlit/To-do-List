@@ -12,7 +12,15 @@ class TaskListView(LoginRequiredMixin, ListView):
     template_name = 'todoapp/todo.html'
 
     def get_queryset(self):
-        return Task.objects.filter(user=self.request.user).order_by('-created_at')
+        queryset = super().get_queryset().filter(user=self.request.user)
+        search_query = self.request.GET.get('q')
+        if search_query:
+            queryset = queryset.filter(title__icontains=search_query)
+
+        return queryset
+    
+    
+
 
 @login_required
 def add_todo(request):
@@ -76,3 +84,47 @@ def register_user(request):
 def logout_user(request):
     logout(request)
     return redirect('login')
+
+
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+import json
+from .models import Task
+
+@csrf_exempt
+def api_create_task(request):
+    if request.method == 'POST':
+        try:
+            # 1. Ensure the user is actually authenticated
+            if not request.user.is_authenticated:
+                return JsonResponse({
+                    "status": "error", 
+                    "message": "Authentication required. Please log in first!"
+                }, status=401)
+                
+            data = json.loads(request.body)
+            title = data.get('title')
+            category = data.get('category', 'Personal')
+            
+            if not title:
+                return JsonResponse({"status": "error", "message": "Title is required!"}, status=400)
+            
+            # 2. Dynamic association with request.user
+            new_task = Task.objects.create(
+                title=title,
+                category=category,
+                user=request.user  # Automatically picks whoever is logged in
+            )
+            
+            return JsonResponse({
+                "status": "success",
+                "message": f"Task '{new_task.title}' created successfully for user '{request.user.username}'!",
+                "task": {
+                    "id": new_task.id,
+                    "title": new_task.title,
+                    "category": new_task.category
+                }
+            }, status=201)
+            
+        except Exception as e:
+            return JsonResponse({"status": "error", "message": str(e)}, status=400)

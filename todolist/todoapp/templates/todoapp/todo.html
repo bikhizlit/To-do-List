@@ -240,8 +240,23 @@
         <p style="text-align: center; font-size: 13px; color: #94a3b8; margin-bottom: 15px;">
     Logged in as <strong>{{ request.user.username }}</strong> | <a href="{% url 'logout' %}" style="color: #e74c3c; text-decoration: none;">Logout</a>
 </p>
-        
-        
+<div class="search-container">
+  <form action="" method="get">
+    <input 
+      type="text" 
+      name="q" 
+      value="{{ request.GET.q|default:'' }}" 
+      placeholder="Search tasks..." 
+      autocomplete="off" 
+      aria-label="Search Tasks"
+    >
+    <button type="submit" class="search-btn">
+      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+        <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0"/>
+      </svg>
+    </button>
+  </form>
+</div>
     <form method="POST" action="{% url 'add_todo' %}" class="todo-form" style="display: flex; gap: 8px; margin-bottom: 25px; align-items: center; flex-wrap: wrap;">
 
     {% csrf_token %}
